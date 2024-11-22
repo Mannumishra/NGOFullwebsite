@@ -1,0 +1,179 @@
+
+
+
+.profile-card {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+    background-color: #26a69a;
+    height: 80px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.profile-info {
+    flex: 1;
+}
+
+.profile-body {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+}
+
+
+.profile-info h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.profile-info p, .card-text, .earning-date {
+    color: #6c6c6c;
+}
+
+
+.profile-body img {
+    margin-top: -71px;
+    border-radius: 10px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.profile-details {
+    background: #FE9B0033;
+    border-radius: 8px;
+    margin: 1px !important;
+}
+
+.notice-details {
+    margin: 1px !important;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+.notice-details p {
+    line-height: 1.7;
+}
+
+
+.card {
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-body {
+    /* display: flex; */
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-footer{
+    margin: 1px !important;
+}
+
+
+
+
+.ds-details {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+
+.ds-card .ds-text{
+    padding-bottom: 88px !important;
+}
+
+.ds-card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+
+.profile-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.earning-amount {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .profile-body {
+        flex-direction: column;
+        text-align: center;
+    }
+    .ds-card {
+        padding: 1rem;
+    }
+    .earning-amount {
+        font-size: 1.25rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .profile-body img {
+        margin-top: -40px;
+    }
+    .profile-details .col-12 {
+        margin-bottom: 15px;
+    }
+    .ds-card .ds-text {
+        padding-bottom: 0;
+    }
+}
+
+
+
+.site-url-section .card {
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.site-url-section .card-body {
+    display: flex;
+    align-items: center;
+}
+
+.site-url-section .text {
+    font-weight: 500;
+    color: #333;
+    flex-shrink: 0;
+}
+
+.site-url-section .link {
+    color: #007bff;
+    text-decoration: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.site-url-section .copy-icon {
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .site-url-section .card-body {
+        flex-direction: column;
+        text-align: center;
+    }
+    .site-url-section .link {
+        max-width: 100%;
+        text-align: center;
+    }
+    .site-url-section .copy-icon {
+        margin-top: 5px;
+    }
+}
+

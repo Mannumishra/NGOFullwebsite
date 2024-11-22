@@ -1,0 +1,15 @@
+
+
+
+footer {
+    height: 50px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    color: rgb(300, 300, 300);
+}
+
+footer p {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}

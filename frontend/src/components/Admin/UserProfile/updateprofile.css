@@ -1,0 +1,54 @@
+
+
+.container {
+    margin-top: 20px;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #ffffff;
+    font-weight: bold;
+    display:flex !important;
+}
+.form-control {
+    border: 1px solid #22B6AF;
+
+}
+.btn-primary {
+    background-color: #22B6AF;
+    border: none;
+}
+.btn-primary:hover {
+    background-color: #22B6AF;
+}
+.form-check-label {
+    margin-right: 20px;
+}
+/* .approved {
+    color: green;
+} */
+
+.card {
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-select {
+    margin-bottom: 20px;
+}
+
+.form-select{
+    box-shadow: none !important;
+    outline: none !important;
+}
+.btn-update {
+    background-color: #20c997;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
