@@ -44,7 +44,7 @@ const Support = () => {
 
         try {
             // Call your backend API to create a Razorpay order
-            const response = await axios.post("http://localhost:8000/api/make-donatation", {
+            const response = await axios.post("https://api.saibalikavikas.com/api/make-donatation", {
                 amount: parseFloat(amount),
                 userId,
             });
@@ -65,7 +65,7 @@ const Support = () => {
 
                         try {
                             // Verify the payment with the backend
-                            const verifyResponse = await axios.post("http://localhost:8000/api/verify-payment", {
+                            const verifyResponse = await axios.post("https://api.saibalikavikas.com/api/verify-payment", {
                                 paymentId: order.id,
                                 razorpayPaymentId: razorpay_payment_id,
                                 razorpaySignature: razorpay_signature,

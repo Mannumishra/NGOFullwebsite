@@ -48,7 +48,7 @@ const TotalDoner = () => {
     useEffect(() => {
         const fetchNewSignups = async () => {
             try {
-                const response = await axios.get("http://localhost:8000/api/get-signups");
+                const response = await axios.get("https://api.saibalikavikas.com/api/get-signups");
                 console.log(response)
                 if (response.status === 200) {
                     // Sort records by creation date and get the latest three
