@@ -7,7 +7,7 @@ const Signup = () => {
     const UserId = sessionStorage.getItem("UserId");
     const [user, setUser] = useState({});
     const [formData, setFormData] = useState({
-        parentID: '',
+        parentId: '',
         title: 'Mr',
         firstName: '',
         lastName: '',
@@ -35,7 +35,7 @@ const Signup = () => {
                 setUser(res.data.data);
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    parentID: res.data.data.logId, // Properly update parentID
+                    parentId: res.data.data.logId, // Properly update parentId
                 }));
             }
         } catch (error) {
@@ -51,7 +51,7 @@ const Signup = () => {
         if (user && user.logId) {
             setFormData(prevFormData => ({
                 ...prevFormData,
-                parentID: user.logId, // Update formData with the user logId
+                parentId: user.logId, // Update formData with the user logId
             }));
         }
     }, [user]);
