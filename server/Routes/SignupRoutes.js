@@ -7,7 +7,7 @@ const SignupRouter = express.Router();
 SignupRouter.post("/signup", createSignup);
 SignupRouter.get("/get-signups", getAllSignups);
 SignupRouter.get("/get-user-details/:id", getSignupById);
-SignupRouter.put("/update-signup/:id", updateSignupById);
+SignupRouter.put("/update-profile/:id", updateSignupById);
 SignupRouter.delete("/delete-signup/:id", deleteSignupById);
 
 
