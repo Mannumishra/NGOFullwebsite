@@ -41,7 +41,7 @@ const Home = () => {
         const userId = DoneruserId;
 
         // Ensure amount is a number before sending
-        const response = await axios.post('http://localhost:8000/api/make-donatation', { amount: parseFloat(amount), userId });
+        const response = await axios.post('https://api.saibalikavikas.com/api/make-donatation', { amount: parseFloat(amount), userId });
         console.log(response);
         const data = response.data;
 
@@ -59,7 +59,7 @@ const Home = () => {
               const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
 
               try {
-                const verifyResponse = await axios.post('http://localhost:8000/api/verify-payment', {
+                const verifyResponse = await axios.post('https://api.saibalikavikas.com/api/verify-payment', {
                   paymentId: order.id,
                   razorpayPaymentId: razorpay_payment_id,
                   razorpaySignature: razorpay_signature,

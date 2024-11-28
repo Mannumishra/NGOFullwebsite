@@ -40,7 +40,7 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission
     try {
-      const response = await axios.post('http://localhost:8000/api/signup', formData);
+      const response = await axios.post('https://api.saibalikavikas.com/api/signup', formData);
       if (response.status = 201) {
         Swal.fire({
           icon: 'success',
