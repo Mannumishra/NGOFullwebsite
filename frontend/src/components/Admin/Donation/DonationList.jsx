@@ -8,20 +8,20 @@ const DonationList = () => {
     const usersPerPage = 15;
     // const navigate = useNavigate();
 
-    
+
     const usersData = [
         { srNo: 1, name: "Aarav", parentId: "---", logid: "SS507RAJARANI", amount: "1000.00", month: "January", timestamp: "2024-01-15 10:30 AM" },
         { srNo: 2, name: "Tanishka", parentId: "---", logid: "SR507RAJARANI", amount: "15000.00", month: "September", timestamp: "2024-02-20 02:45 PM" },
         { srNo: 3, name: "Nikhil", parentId: "RETAILORDER-838504", logid: "SA507RAJARANI", amount: "1200.00", month: "November", timestamp: "2024-03-10 11:15 AM" },
     ];
 
- 
+
     const filteredUsers = usersData.filter(user =>
         user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         user.logid.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    
+
     const indexOfLastUser = currentPage * usersPerPage;
     const indexOfFirstUser = indexOfLastUser - usersPerPage;
     const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -82,12 +82,12 @@ const DonationList = () => {
             {/* Pagination Controls */}
             <div className="d-flex justify-content-center align-items-center">
                 <button className="btn btn-next me-2" onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1} >
+                    disabled={currentPage === 1} >
                     Previous
                 </button>
                 <span>Page {currentPage} of {totalPages}</span>
                 <button className="btn btn-next ms-2" onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                 disabled={currentPage === totalPages}>
+                    disabled={currentPage === totalPages}>
                     Next
                 </button>
             </div>

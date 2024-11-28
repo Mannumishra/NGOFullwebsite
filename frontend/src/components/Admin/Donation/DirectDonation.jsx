@@ -13,7 +13,7 @@ const DirectDonation = () => {
         // Add more users as needed
     ];
 
-   
+
     const [selectedUserIndex, setSelectedUserIndex] = useState(0);
 
     const handleNextUser = () => {
