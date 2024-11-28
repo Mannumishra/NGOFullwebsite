@@ -1,7 +1,9 @@
-const SignUp = require("../Models/SignupModel");
+
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { transporter } = require("../utils/mailConfig");
+const AdminSignup = require("../Models/AdminSignupModel");
+const SignUp = require("../Models/SignupModel");
 
 
 // Error message collector
@@ -43,7 +45,7 @@ const createSignup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
         const hashedconfPassword = await bcrypt.hash(req.body.confirmPassword, 12);
 
-        const newSignup = new SignUp({
+        const newSignup = new AdminSignup({
             ...req.body,
             logId,
             password: hashedPassword,
@@ -107,7 +109,7 @@ const createSignup = async (req, res) => {
 // Get all signups
 const getAllSignups = async (req, res) => {
     try {
-        const signups = await SignUp.find();
+        const signups = await AdminSignup.find();
         res.status(200).json({
             success: true,
             message: "Record Found Successfully",
@@ -122,7 +124,7 @@ const getAllSignups = async (req, res) => {
 // Get a single signup by ID
 const getSignupById = async (req, res) => {
     try {
-        const signup = await SignUp.findById(req.params.id);
+        const signup = await AdminSignup.findById(req.params.id);
         if (!signup) {
             return res.status(404).json({ success: false, errors: ["Signup not found"] });
         }
@@ -140,7 +142,7 @@ const getSignupById = async (req, res) => {
 // Update a signup by ID
 const updateSignupById = async (req, res) => {
     try {
-        const updatedSignup = await SignUp.findByIdAndUpdate(req.params.id, req.body, {
+        const updatedSignup = await AdminSignup.findByIdAndUpdate(req.params.id, req.body, {
             new: true,
             runValidators: true,
         });
@@ -161,7 +163,7 @@ const updateSignupById = async (req, res) => {
 // Delete a signup by ID
 const deleteSignupById = async (req, res) => {
     try {
-        const deletedSignup = await SignUp.findByIdAndDelete(req.params.id);
+        const deletedSignup = await AdminSignup.findByIdAndDelete(req.params.id);
         if (!deletedSignup) {
             return res.status(404).json({ success: false, errors: ["Signup not found"] });
         }
@@ -173,54 +175,54 @@ const deleteSignupById = async (req, res) => {
 };
 
 
-const loginUser = async (req, res) => {
-    const { logId, password } = req.body;
-    try {
-        const user = await SignUp.findOne({ logId });
-        if (!user) {
-            return res.status(404).json({ success: false, errors: ["Invalid Log In Id"] });
-        }
-        // Validate password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ success: false, errors: ["Invalid Password"] });
-        }
+// const loginUser = async (req, res) => {
+//     const { logId, password } = req.body;
+//     try {
+//         const user = await AdminSignup.findOne({ logId }) || await SignUp.findOne({ logId });
+//         if (!user) {
+//             return res.status(404).json({ success: false, errors: ["Invalid Log In Id"] });
+//         }
+//         // Validate password
+//         const isPasswordValid = await bcrypt.compare(password, user.password);
+//         if (!isPasswordValid) {
+//             return res.status(401).json({ success: false, errors: ["Invalid Password"] });
+//         }
 
-        // Determine role and set corresponding key
-        const secretKey = user.role === "ADMIN"
-            ? process.env.SALT_KEY_ADMIN
-            : process.env.SALT_KEY_USER;
+//         // Determine role and set corresponding key
+//         const secretKey = user.role === "ADMIN"
+//             ? process.env.SALT_KEY_ADMIN
+//             : process.env.SALT_KEY_USER;
 
-        // Generate JWT Token
-        const token = jwt.sign(
-            {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-            },
-            secretKey,
-            { expiresIn: "1h" } // Token expiry
-        );
+//         // Generate JWT Token
+//         const token = jwt.sign(
+//             {
+//                 id: user._id,
+//                 email: user.email,
+//                 role: user.role,
+//             },
+//             secretKey,
+//             { expiresIn: "1h" } // Token expiry
+//         );
 
-        // Respond with token and user details
-        res.status(200).json({
-            success: true,
-            message: "Login successful",
-            token,
-            user: {
-                id: user._id,
-                email: user.email,
-                role: user.role,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                logId: user.logId
-            }
-        });
-    } catch (err) {
-        console.error("Login error:", err);
-        res.status(500).json({ success: false, errors: ["Internal Server Error"] });
-    }
-};
+//         // Respond with token and user details
+//         res.status(200).json({
+//             success: true,
+//             message: "Login successful",
+//             token,
+//             user: {
+//                 id: user._id,
+//                 email: user.email,
+//                 role: user.role,
+//                 firstName: user.firstName,
+//                 lastName: user.lastName,
+//                 logId: user.logId
+//             }
+//         });
+//     } catch (err) {
+//         console.error("Login error:", err);
+//         res.status(500).json({ success: false, errors: ["Internal Server Error"] });
+//     }
+// };
 
 
 module.exports = {
@@ -229,5 +231,5 @@ module.exports = {
     getSignupById,
     updateSignupById,
     deleteSignupById,
-    loginUser
+    // loginUser
 };

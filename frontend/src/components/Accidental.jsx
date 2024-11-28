@@ -41,7 +41,7 @@ const Accidental = () => {
 
         try {
             // Create an order via API
-            const response = await axios.post('https://api.saibalikavikas.com/api/make-donatation', {
+            const response = await axios.post('http://localhost:8000/api/make-donatation', {
                 amount: parseFloat(amount),
                 userId,
             });
@@ -60,7 +60,7 @@ const Accidental = () => {
                         const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = response;
 
                         try {
-                            const verifyResponse = await axios.post('https://api.saibalikavikas.com/api/verify-payment', {
+                            const verifyResponse = await axios.post('http://localhost:8000/api/verify-payment', {
                                 paymentId: order.id,
                                 razorpayPaymentId: razorpay_payment_id,
                                 razorpaySignature: razorpay_signature,
