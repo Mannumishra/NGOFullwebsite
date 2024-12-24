@@ -151,7 +151,7 @@ exports.getUserRelation = async (req, res) => {
     const { userId } = req.params; // Get userId from request params
 
     // Step 1: Find user relation by userId
-    const userRelation = await UserRelation.findOne({ user: userId });
+    const userRelation = await UserRelation.findOne({ user: userId }).populate("user").populate("rightUser").populate("leftUser");
 
     if (!userRelation) {
       return res.status(404).json({

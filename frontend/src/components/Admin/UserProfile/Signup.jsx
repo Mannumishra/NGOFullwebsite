@@ -5,12 +5,14 @@ import { useLocation } from 'react-router-dom';
 import '../Sidebar/Sidebar.css';
 
 const Signup = () => {
-    const UserId = sessionStorage.getItem("UserId");
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const parentId = queryParams.get('parentId');
     const position = queryParams.get('position'); // 'Left' or 'Right'
-
+    const userIdFromParams = queryParams.get('userId'); // Fetch UserId from URL params
+    
+    // Fetch UserId from sessionStorage or from URL parameters (prefer URL params)
+    const [userId, setUserId] = useState(userIdFromParams || sessionStorage.getItem("UserId"));
     const [showPassword, setShowPassword] = useState("")
     const [cshowPassword, setCshowPassword] = useState("")
     const [user, setUser] = useState({});
@@ -37,7 +39,7 @@ const Signup = () => {
     // Fetch user data
     const getUserRecord = async () => {
         try {
-            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${UserId}`);
+            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${userId}`);
             if (res.status === 200) {
                 setUser(res.data.data);
             }
@@ -48,7 +50,7 @@ const Signup = () => {
 
     useEffect(() => {
         getUserRecord();
-    }, [UserId]);
+    }, [userId]); // Fetch user data whenever userId changes
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -69,7 +71,7 @@ const Signup = () => {
 
         // Dynamically set position (leftUser or rightUser)
         const payload = {
-            user: UserId,
+            user: userId,
             [position === 'Left' ? 'leftUser' : 'rightUser']: { ...formData },
         };
 

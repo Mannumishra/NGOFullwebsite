@@ -1,37 +1,46 @@
 import React, { useEffect, useState } from 'react';
-import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
+import { FaLongArrowAltUp } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import userImg from '../assets/images/userimg.png'; // User image
 import axios from 'axios';
 
 const DirectDonation = () => {
-    const UserId = sessionStorage.getItem("UserId");
+    const [UserId, setUserId] = useState(sessionStorage.getItem("UserId") || ""); // Initially set UserId from sessionStorage
     const [mainUser, setMainUser] = useState({});
     const [leftUser, setLeftUser] = useState(null); // State for left user
     const [rightUser, setRightUser] = useState(null); // State for right user
 
+    const userIDChange = (id) => {
+        setUserId(id); // Update UserId state locally
+        // Remove sessionStorage update here
+    };
+
     // Fetch main user details
-    const getuserRecord = async () => {
+    const getUserRecord = async () => {
+        if (!UserId) return; // Avoid API call if UserId is not set
         try {
-            const res = await axios.get("https://api.saibalikavikas.com/api/get-user-details/" + UserId);
+            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${UserId}`);
             if (res.status === 200) {
                 setMainUser(res.data.data);
-                // Check if left and right users are assigned under the main user
+
+                // Fetch left and right users under the main user
                 const userRelation = await axios.get(`https://api.saibalikavikas.com/api/user-relation/${UserId}`);
-                console.log(userRelation)
-                if (userRelation.data) {
+                if (userRelation.status === 200 && userRelation.data) {
                     setLeftUser(userRelation.data.userRelation.leftUser);
                     setRightUser(userRelation.data.userRelation.rightUser);
                 }
             }
         } catch (error) {
-            console.log(error);
+            console.error("Error fetching user data:", error);
         }
     };
 
+    // Trigger API call whenever UserId changes
     useEffect(() => {
-        getuserRecord();
-    }, []);
+        if (UserId) {
+            getUserRecord(); // Fetch user details when UserId is set or changes
+        }
+    }, [UserId]); // Dependency on UserId
 
     return (
         <div className="container">
@@ -70,13 +79,14 @@ const DirectDonation = () => {
                         <div className="col-6 text-center">
                             <div className="avatar">
                                 {leftUser ? (
-                                    <>
-                                        <img alt="Avatar" height="100" src={leftUser.image || userImg} width="100" />
-                                        <div>{leftUser.logId}</div> {/* Display logId */}
-                                        <div>{leftUser.firstName} {leftUser.lastName}</div> {/* Optionally display user's name */}
-                                    </>
+                                    <button
+                                        className="btn btn-dark"
+                                        onClick={() => userIDChange(leftUser._id)} // Change UserId to left user's id
+                                    >
+                                        {leftUser.logId}
+                                    </button>
                                 ) : (
-                                    <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Left`}>
+                                    <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Left&userId=${mainUser._id}`}>
                                         <button className="btn btn-outline-danger" type="button">Left Empty</button>
                                     </Link>
                                 )}
@@ -87,13 +97,14 @@ const DirectDonation = () => {
                         <div className="col-6 text-center">
                             <div className="avatar">
                                 {rightUser ? (
-                                    <>
-                                        <img alt="Avatar" height="100" src={rightUser.image || userImg} width="100" />
-                                        <div>{rightUser.logId}</div> {/* Display logId */}
-                                        <div>{rightUser.firstName} {rightUser.lastName}</div> {/* Optionally display user's name */}
-                                    </>
+                                    <button
+                                        className="btn btn-dark"
+                                        onClick={() => userIDChange(rightUser._id)} // Change UserId to right user's id
+                                    >
+                                        {rightUser.logId}
+                                    </button>
                                 ) : (
-                                    <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Right`}>
+                                    <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Right&userId=${mainUser._id}`}>
                                         <button className="btn btn-outline-danger" type="button">Right Empty</button>
                                     </Link>
                                 )}

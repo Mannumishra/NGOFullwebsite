@@ -115,8 +115,7 @@ const getSignupById = async (req, res) => {
             data: signup
         });
     } catch (err) {
-        handleError(err);
-        res.status(500).json({ success: false, errors: errorMessage });
+        res.status(500).json({ success: false, message:"Internal Server Error" });
     }
 };
 
