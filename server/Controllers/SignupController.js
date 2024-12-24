@@ -8,79 +8,13 @@ const UserRelation = require("../Models/UserRelationSchema");
 const createSignup = async (req, res) => {
     try {
         const { password, confirmPassword, firstName, lastName, dateOfBirth, mobile, email, address, state, city, pincode, country, } = req.body;
-        if (!firstName) {
-            return res.status(400).json({
-                success: false,
-                message: "First name is must required"
-            })
+        if (!firstName || !lastName || !dateOfBirth || !mobile || !email || !address || !state || !city || !pincode || !country) {
+            return res.status(400).json({ success: false, message: "All required fields must be filled." });
         }
-        if (!lastName) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!dateOfBirth) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!mobile) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!email) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!address) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!state) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!city) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!pincode) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!country) {
-            return res.status(400).json({
-                success: false,
-                message: "Last name is must required"
-            })
-        }
-        if (!password || !confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: "Password and confirm password are required.",
-            });
+        if (password !== confirmPassword) {
+            return res.status(400).json({ success: false, message: "Passwords do not match." });
         }
 
-        if (password !== confirmPassword) {
-            return res.status(400).json({
-                success: false,
-                message: "Passwords do not match.",
-            });
-        }
         const existingUser = await SignUp.findOne({
             $or: [{ email }, { mobile }],
         });
@@ -90,17 +24,8 @@ const createSignup = async (req, res) => {
                 message: "Email or mobile number already exists.",
             });
         }
-        let logId;
-        let isUnique = false;
-        while (!isUnique) {
-            // Generate a new logId with timestamp or random element
-            const potentialLogId = `SBVKS${Date.now().toString().slice(-3)}${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`;
-            const existingLogId = await SignUp.findOne({ logId: potentialLogId });
-            if (!existingLogId) {
-                logId = potentialLogId;  // Set the logId if it's unique
-                isUnique = true;  // Exit the loop if unique
-            }
-        }
+        const logId = `SBVKS${Date.now().toString().slice(-3)}${Math.floor(Math.random() * 1000).toString().padStart(3, "0")}`;
+
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
         const hashedconfPassword = await bcrypt.hash(req.body.confirmPassword, 12);
         const newSignup = new SignUp({

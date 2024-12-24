@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const SignupSchema = new mongoose.Schema({
-    logId: { type: String, default: "SBVKS001" },
+    logId: { type: String, required: true },
     password: { type: String, required: true },
     confirmPassword: { type: String, required: true },
     title: { type: String, required: false },
