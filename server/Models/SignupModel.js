@@ -2,9 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const SignupSchema = new mongoose.Schema({
-    parentId: { type: String, required: false },
-    // referral: { type: String, required: false },
-    // placement: { type: String, required: false },
     logId: { type: String, default: "SBVKS001" },
     password: { type: String, required: true },
     confirmPassword: { type: String, required: true },
@@ -16,8 +13,8 @@ const SignupSchema = new mongoose.Schema({
     motherName: { type: String, required: false },
     gender: { type: String, required: false },
     dateOfBirth: { type: Date, required: true },
-    mobile: { type: String, required: true, unique: true },
-    email: { type: String, required: true, unique: true },
+    mobile: { type: String, required: true },
+    email: { type: String, required: true },
     address: { type: String, required: true },
     state: { type: String, required: true },
     city: { type: String, required: true },
@@ -35,23 +32,6 @@ const SignupSchema = new mongoose.Schema({
     accountNumber: { type: String, required: false },
     gstNumber: { type: String, required: false },
 }, { timestamps: true });
-
-
-// // Hash password before saving
-// SignupSchema.pre("save", async function (next) {
-//     if (!this.isModified("password")) return next();
-
-//     try {
-//         const salt = await bcrypt.genSalt(12); // Adjust the salt rounds as needed
-//         this.password = await bcrypt.hash(this.password, salt);
-//         this.confirmPassword = undefined; // Remove confirmPassword from storage
-//         next();
-//     } catch (err) {
-//         next(err);
-//     }
-// });
-
-
 
 const SignUp = mongoose.model("Signup", SignupSchema);
 

@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import '../Sidebar/Sidebar.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useLocation } from 'react-router-dom';
+import '../Sidebar/Sidebar.css';
 
 const Signup = () => {
     const UserId = sessionStorage.getItem("UserId");
+    const location = useLocation();
+    const queryParams = new URLSearchParams(location.search);
+    const parentId = queryParams.get('parentId');
+    const position = queryParams.get('position'); // 'Left' or 'Right'
+
+    const [showPassword, setShowPassword] = useState("")
+    const [cshowPassword, setCshowPassword] = useState("")
     const [user, setUser] = useState({});
     const [formData, setFormData] = useState({
-        parentId: '',
         title: 'Mr',
         firstName: '',
-        lastName: '',
         middleName: '',
+        lastName: '',
         gender: 'Male',
         mobile: '',
         email: '',
@@ -24,19 +31,15 @@ const Signup = () => {
         pincode: '',
         landmark: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
     });
 
+    // Fetch user data
     const getUserRecord = async () => {
         try {
-            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${UserId}`);
-            console.log(res);
+            const res = await axios.get(`http://localhost:8000/api/get-user-details/${UserId}`);
             if (res.status === 200) {
                 setUser(res.data.data);
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    parentId: res.data.data.logId, // Properly update parentId
-                }));
             }
         } catch (error) {
             console.log(error);
@@ -47,30 +50,14 @@ const Signup = () => {
         getUserRecord();
     }, [UserId]);
 
-    useEffect(() => {
-        if (user && user.logId) {
-            setFormData(prevFormData => ({
-                ...prevFormData,
-                parentId: user.logId, // Update formData with the user logId
-            }));
-        }
-    }, [user]);
-
-    const [showPassword, setShowPassword] = useState(false);
-    const [cshowPassword, setCshowPassword] = useState(false);
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Password confirmation validation
         if (formData.password !== formData.confirmPassword) {
             Swal.fire({
                 icon: 'error',
@@ -80,41 +67,46 @@ const Signup = () => {
             return;
         }
 
+        // Dynamically set position (leftUser or rightUser)
+        const payload = {
+            user: UserId,
+            [position === 'Left' ? 'leftUser' : 'rightUser']: { ...formData },
+        };
+
         try {
-            // console.log(formData);
-            const response = await axios.post('https://api.saibalikavikas.com/api/signup', formData);
-            if (response.status === 201) {
+            const response = await axios.post('http://localhost:8000/api/create', payload);
+            if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
-                    title: 'New User Added Successful',
-                    text: 'You have successfully signed up!',
+                    title: 'User Added Successfully',
+                    text: 'You have successfully added a user!',
+                });
+                setFormData({
+                    title: 'Mr',
+                    firstName: '',
+                    middleName: '',
+                    lastName: '',
+                    gender: 'Male',
+                    mobile: '',
+                    email: '',
+                    dateOfBirth: '',
+                    state: '',
+                    city: '',
+                    address: '',
+                    country: 'India',
+                    district: '',
+                    pincode: '',
+                    landmark: '',
+                    password: '',
+                    confirmPassword: '',
                 });
             }
-            setFormData({
-                title: '',
-                firstName: '',
-                lastName: '',
-                middleName: '',
-                mobile: '',
-                email: '',
-                dateOfBirth: '',
-                gender: '',
-                state: '',
-                city: '',
-                address: '',
-                country: '',
-                district: '',
-                pincode: '',
-                landmark: '',
-                password: '',
-                confirmPassword: ''
-            });
         } catch (error) {
-            console.log(error);
+            console.error(error);
             Swal.fire({
                 icon: 'error',
-                title: 'Signup Failed',
-                text: error.response?.data?.errors || 'An error occurred. Please try again.',
+                title: 'Error',
+                text: error.response?.data?.message || 'An error occurred. Please try again.',
             });
         }
     };
@@ -125,16 +117,28 @@ const Signup = () => {
             <h6 className="mb-5">Signup new login</h6>
             <form onSubmit={handleSubmit}>
                 <div className="row mb-3">
-                    <div className="col-md-12 mb-3">
+                    <div className="col-md-6 mb-3">
                         <label htmlFor="name">Parent ID</label>
                         <input
-                            id="parentId"
-                            name="parentId"
-                            placeholder="parentId"
+                            id="user"
+                            name="user"
+                            placeholder="user"
                             type="text"
-                            value={user.logId || ''} // Using logId from the user data
+                            value={user._id || ''} // Using logId from the user data
                             onChange={handleInputChange} required
                             className='form-control'
+                            disabled
+                        />
+                    </div>
+                    <div className="col-md-6 mb-3">
+                        <label htmlFor="position">Position</label>
+                        <input
+                            id="position"
+                            name={position === 'Left' ? 'leftSide' : 'rightSide'}
+                            type="text"
+                            value={position}
+                            onChange={handleInputChange}
+                            className="form-control"
                             disabled
                         />
                     </div>

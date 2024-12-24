@@ -2,32 +2,94 @@ const SignUp = require("../Models/SignupModel");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { transporter } = require("../utils/mailConfig");
-
-
-// Error message collector
-const errorMessage = [];
-
-// Helper function to handle errors
-const handleError = (err) => {
-    errorMessage.length = 0; // Reset error messages
-    if (err.code === 11000) {
-        // Handle duplicate key error
-        const field = Object.keys(err.keyValue)[0];
-        errorMessage.push(`${field} already exists`);
-    } else if (err.errors) {
-        // Handle validation errors
-        for (const field in err.errors) {
-            errorMessage.push(err.errors[field].message);
-        }
-    } else {
-        errorMessage.push(err.message);
-    }
-};
+const UserRelation = require("../Models/UserRelationSchema");
 
 // Create a new signup
 const createSignup = async (req, res) => {
     try {
-        console.log(req.body);
+        const { password, confirmPassword, firstName, lastName, dateOfBirth, mobile, email, address, state, city, pincode, country, } = req.body;
+        if (!firstName) {
+            return res.status(400).json({
+                success: false,
+                message: "First name is must required"
+            })
+        }
+        if (!lastName) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!dateOfBirth) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!mobile) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!address) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!state) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!city) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!pincode) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!country) {
+            return res.status(400).json({
+                success: false,
+                message: "Last name is must required"
+            })
+        }
+        if (!password || !confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Password and confirm password are required.",
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                success: false,
+                message: "Passwords do not match.",
+            });
+        }
+        const existingUser = await SignUp.findOne({
+            $or: [{ email }, { mobile }],
+        });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: "Email or mobile number already exists.",
+            });
+        }
         let logId;
         let isUnique = false;
         while (!isUnique) {
@@ -39,19 +101,19 @@ const createSignup = async (req, res) => {
                 isUnique = true;  // Exit the loop if unique
             }
         }
-
         const hashedPassword = await bcrypt.hash(req.body.password, 12);
         const hashedconfPassword = await bcrypt.hash(req.body.confirmPassword, 12);
-
         const newSignup = new SignUp({
             ...req.body,
             logId,
             password: hashedPassword,
             confirmPassword: hashedconfPassword
         });
-
         const savedSignup = await newSignup.save();
-
+        const latestRelationForCurrentUser = new UserRelation({
+            user: newSignup._id
+        })
+        await latestRelationForCurrentUser.save()
         // Send email with login details to the user
         const mailOptions = {
             from: process.env.MAIL_USERNAME, // Sender's email
@@ -79,8 +141,6 @@ const createSignup = async (req, res) => {
                 </body>
             `,
         };
-
-
         transporter.sendMail(mailOptions, (err, info) => {
             if (err) {
                 console.error("Error sending email:", err);
@@ -88,19 +148,17 @@ const createSignup = async (req, res) => {
                 console.log("Email sent:", info.response);
             }
         });
-
-
-        res.status(201).json(savedSignup);
+        res.status(201).json({
+            success: true,
+            message: "Signup successful. Login details have been sent to your email.",
+            data: savedSignup,
+        });
     } catch (err) {
-        console.error("Error:", err); // Debugging
-        handleError(err); // Collect errors
-        if (err.name === "ValidationError") {
-            res.status(400).json({ success: false, errors: errorMessage });
-        } else if (err.code === 11000) {
-            res.status(409).json({ success: false, errors: errorMessage });
-        } else {
-            res.status(500).json({ success: false, errors: ["Internal Server Error"] });
-        }
+        console.error("Error:", err);
+        res.status(500).json({
+            success: false,
+            message: "An error occurred while processing your request.",
+        });
     }
 };
 
@@ -140,16 +198,25 @@ const getSignupById = async (req, res) => {
 // Update a signup by ID
 const updateSignupById = async (req, res) => {
     try {
-        const updatedSignup = await SignUp.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        });
+        const { leftUser, rightUser } = req.body;  // Assuming these are ObjectIds of other users to be linked
+        const updatedSignup = await SignUp.findByIdAndUpdate(
+            req.params.id,  // Find the user by ID
+            {
+                $set: {
+                    leftUser,  // Set the leftUser to the passed ObjectId
+                    rightUser,  // Set the rightUser to the passed ObjectId
+                }
+            },
+            { new: true, runValidators: true }  // Return the updated document
+        );
+
         if (!updatedSignup) {
             return res.status(404).json({ success: false, errors: ["Signup not found"] });
         }
+
         res.status(200).json(updatedSignup);
     } catch (err) {
-        handleError(err);
+        console.log(err);
         if (err.name === 'ValidationError') {
             res.status(400).json({ success: false, errors: errorMessage });
         } else {
@@ -157,6 +224,7 @@ const updateSignupById = async (req, res) => {
         }
     }
 };
+
 
 // Delete a signup by ID
 const deleteSignupById = async (req, res) => {

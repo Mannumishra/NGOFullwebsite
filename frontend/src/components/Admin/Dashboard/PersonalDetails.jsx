@@ -17,7 +17,7 @@ const PersonalDetails = () => {
 
     const getApidata = async () => {
         try {
-            const res = await axios.get("https://api.saibalikavikas.com/api/get-user-details/" + userId)
+            const res = await axios.get("http://localhost:8000/api/get-user-details/" + userId)
             if (res.status === 200) {
                 setUserdata(res.data.data)
             }

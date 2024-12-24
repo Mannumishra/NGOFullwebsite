@@ -1,24 +1,37 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import userImg from '../assets/images/userimg.png';
-// import anotherUserImg from '../assets/images/anotherUserImg.png'; // add more images if needed
-import '../Sidebar/Sidebar.css'
+import userImg from '../assets/images/userimg.png'; // User image
+import axios from 'axios';
 
 const DirectDonation = () => {
-    // Array of users
-    const users = [
-        { id: "DL05DK1986", name: "Sunil Kumar", image: userImg, link: "/admin-UserView" },
-        { id: "DL05DK1987", name: "Pooja Singh", image: userImg, link: "/admin-UserView" },
-        // Add more users as needed
-    ];
+    const UserId = sessionStorage.getItem("UserId");
+    const [mainUser, setMainUser] = useState({});
+    const [leftUser, setLeftUser] = useState(null); // State for left user
+    const [rightUser, setRightUser] = useState(null); // State for right user
 
-
-    const [selectedUserIndex, setSelectedUserIndex] = useState(0);
-
-    const handleNextUser = () => {
-        setSelectedUserIndex((prevIndex) => (prevIndex + 1) % users.length);
+    // Fetch main user details
+    const getuserRecord = async () => {
+        try {
+            const res = await axios.get("http://localhost:8000/api/get-user-details/" + UserId);
+            if (res.status === 200) {
+                setMainUser(res.data.data);
+                // Check if left and right users are assigned under the main user
+                const userRelation = await axios.get(`http://localhost:8000/api/user-relation/${UserId}`);
+                console.log(userRelation)
+                if (userRelation.data) {
+                    setLeftUser(userRelation.data.userRelation.leftUser);
+                    setRightUser(userRelation.data.userRelation.rightUser);
+                }
+            }
+        } catch (error) {
+            console.log(error);
+        }
     };
+
+    useEffect(() => {
+        getuserRecord();
+    }, []);
 
     return (
         <div className="container">
@@ -27,25 +40,24 @@ const DirectDonation = () => {
                 <h4>KYC: Completed</h4>
             </div>
 
-            {/* Display selected user details */}
+            {/* Display main user details */}
             <div className="donation-container">
                 <div className="card donation-card">
                     <div className="row">
                         <div className="col-5">
-                            <img src={users[selectedUserIndex].image} alt="User" />
+                            <img alt="Avatar" height="100" src={userImg} width="100" />
                         </div>
                         <div className="col-7">
                             <div className="card-body">
-                                <h5 className="card-title">{users[selectedUserIndex].id}</h5>
+                                <h5 className="card-title">{mainUser.logId}</h5>
                                 <Link to="#" className="btn btn-arrow"><FaLongArrowAltUp /></Link>
-                                <br />
-                                <Link to={users[selectedUserIndex].link} className="btn btn-custom">View Detail</Link>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            {/* Left and Right user sections */}
             <div className="user-card">
                 <div className="card group-card">
                     <div className="card-title">GROUP</div>
@@ -53,27 +65,39 @@ const DirectDonation = () => {
                         <button className="btn btn-outline-secondary" type="button">Left</button>
                         <button className="btn btn-outline-secondary" type="button">Right</button>
                     </div>
-                    <div className="btn-group" role="group">
-                        <button className="btn btn-info" type="button">0</button>
-                        <button className="btn btn-info" type="button">554</button>
-                    </div>
                     <div className="row">
+                        {/* Left position */}
                         <div className="col-6 text-center">
                             <div className="avatar">
-                                <img alt="Avatar" height="100" src={userImg} width="100" />
+                                {leftUser ? (
+                                    <>
+                                        <img alt="Avatar" height="100" src={leftUser.image || userImg} width="100" />
+                                        <div>{leftUser.logId}</div> {/* Display logId */}
+                                        <div>{leftUser.firstName} {leftUser.lastName}</div> {/* Optionally display user's name */}
+                                    </>
+                                ) : (
+                                    <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Left`}>
+                                        <button className="btn btn-outline-danger" type="button">Left Empty</button>
+                                    </Link>
+                                )}
                             </div>
-                            <Link to="/admin-signup">
-                                <button className="btn btn-outline-danger" type="button">Empty</button>
-                            </Link>
                         </div>
+
+                        {/* Right position */}
                         <div className="col-6 text-center">
                             <div className="avatar">
-                                <img alt="Avatar" height="100" src={users[selectedUserIndex].image} width="100" />
+                                {rightUser ? (
+                                    <>
+                                        <img alt="Avatar" height="100" src={rightUser.image || userImg} width="100" />
+                                        <div>{rightUser.logId}</div> {/* Display logId */}
+                                        <div>{rightUser.firstName} {rightUser.lastName}</div> {/* Optionally display user's name */}
+                                    </>
+                                ) : (
+                                    <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Right`}>
+                                        <button className="btn btn-outline-danger" type="button">Right Empty</button>
+                                    </Link>
+                                )}
                             </div>
-                            <div>{users[selectedUserIndex].id}</div>
-                            <button className="btn btn-arrowUp" type="button" onClick={handleNextUser}>
-                                <FaLongArrowAltDown size={15} />
-                            </button>
                         </div>
                     </div>
                 </div>
