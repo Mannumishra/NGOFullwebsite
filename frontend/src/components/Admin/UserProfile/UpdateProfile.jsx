@@ -41,7 +41,7 @@ const UpdateProfile = () => {
 
     const getUserdata = async () => {
         try {
-            const res = await axios.get(`http://localhost:8000/api/get-user-details/${userId}`);
+            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${userId}`);
             console.log(res)
             if (res.status === 200) {
                 setUserData(res.data.data);
@@ -63,7 +63,7 @@ const UpdateProfile = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put(`http://localhost:8000/api/update-profile/${userData._id}`, userData);
+            const res = await axios.put(`https://api.saibalikavikas.com/api/update-profile/${userData._id}`, userData);
             if (res.status === 200) {
                 Swal.fire('Success', 'Profile updated successfully!', 'success');
             } else {
@@ -78,7 +78,7 @@ const UpdateProfile = () => {
     const handleInfoSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await axios.put(`http://localhost:8000/api/update-profile/${userData._id}`, {
+            const res = await axios.put(`https://api.saibalikavikas.com/api/update-profile/${userData._id}`, {
                 nomineeName: userData.nomineeName,
                 nomineeRelation: userData.nomineeRelation,
                 nomineeAddress: userData.nomineeAddress,
@@ -100,7 +100,7 @@ const UpdateProfile = () => {
         try {
             const isValidPAN = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(userData.panNumber);
             if (isValidPAN) {
-                const res = await axios.put(`http://localhost:8000/api/update-profile/${userData._id}`, {
+                const res = await axios.put(`https://api.saibalikavikas.com/api/update-profile/${userData._id}`, {
                     panNumber: userData.panNumber,
                 });
                 if (res.status === 200) {
@@ -126,7 +126,7 @@ const UpdateProfile = () => {
             return;
         }
         try {
-            const res = await axios.put(`http://localhost:8000/api/update-profile/${userData._id}`, {
+            const res = await axios.put(`https://api.saibalikavikas.com/api/update-profile/${userData._id}`, {
                 ifscCode: userData.ifscCode,
                 accountNumber: userData.accountNumber,
             });
@@ -150,7 +150,7 @@ const UpdateProfile = () => {
                 Swal.fire('Invalid GST Number', 'Please enter a valid GST number.', 'error');
                 return;
             }
-            const res = await axios.put(`http://localhost:8000/api/update-profile/${userData._id}`, {
+            const res = await axios.put(`https://api.saibalikavikas.com/api/update-profile/${userData._id}`, {
                 gstNumber: userData.gstNumber,
             });
             if (res.status === 200) {

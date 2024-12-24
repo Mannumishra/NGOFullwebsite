@@ -13,11 +13,11 @@ const DirectDonation = () => {
     // Fetch main user details
     const getuserRecord = async () => {
         try {
-            const res = await axios.get("http://localhost:8000/api/get-user-details/" + UserId);
+            const res = await axios.get("https://api.saibalikavikas.com/api/get-user-details/" + UserId);
             if (res.status === 200) {
                 setMainUser(res.data.data);
                 // Check if left and right users are assigned under the main user
-                const userRelation = await axios.get(`http://localhost:8000/api/user-relation/${UserId}`);
+                const userRelation = await axios.get(`https://api.saibalikavikas.com/api/user-relation/${UserId}`);
                 console.log(userRelation)
                 if (userRelation.data) {
                     setLeftUser(userRelation.data.userRelation.leftUser);
