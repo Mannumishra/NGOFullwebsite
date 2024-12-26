@@ -14,19 +14,30 @@ import axios from 'axios';
 const PersonalDetails = () => {
     const userId = sessionStorage.getItem("UserId")
     const [userdata, setUserdata] = useState({})
+    const [leftUser, setLeftUser] = useState(null); // State for left user
+    const [rightUser, setRightUser] = useState(null); // State for right user
 
-    const getApidata = async () => {
+
+    const getUserRecord = async () => {
         try {
-            const res = await axios.get("https://api.saibalikavikas.com/api/get-user-details/" + userId)
+            const res = await axios.get(`http://localhost:8000/api/get-user-details/${userId}`);
             if (res.status === 200) {
-                setUserdata(res.data.data)
+                setUserdata(res.data.data);
+
+                // Fetch left and right users under the main user
+                const userRelation = await axios.get(`http://localhost:8000/api/user-relation/${userId}`);
+                if (userRelation.status === 200 && userRelation.data) {
+                    setLeftUser(userRelation.data.userRelation.leftUser);
+                    setRightUser(userRelation.data.userRelation.rightUser);
+                }
             }
         } catch (error) {
-            console.log(error)
+            console.error("Error fetching user data:", error);
         }
-    }
+    };
+
     useEffect(() => {
-        getApidata()
+        getUserRecord()
     }, [userId])
 
     console.log(userdata)
@@ -78,26 +89,26 @@ const PersonalDetails = () => {
                 <div className="row mt-4 card-section">
                     <div className="col-md-5 col-12">
                         <div className="card p-3 ds-card">
-                            <h5 className="card-title ds-title">DS Details</h5>
-                            <div className="ds-details">
+                            <h5 className="card-title ds-title">Direct Sales Details</h5>
+                            {/* <div className="ds-details">
                                 <img src={user1} alt="Profile image of DL05DK1986" className="profile-img" />
                                 <div>
                                     <div className="fw-bold">DL05DK1986</div>
                                     <div className="card-text">Logid</div>
                                 </div>
-                            </div>
+                            </div> */}
                             <div className="ds-details">
                                 <img src={user2} alt="Profile image of SSSDOMKAR79" className="profile-img" />
                                 <div>
-                                    <div className="fw-bold">SSSDOMKAR79</div>
-                                    <div className="card-text">Reference ID</div>
+                                    <div className="fw-bold">{leftUser?.logId || "N/A"}</div>
+                                    <div className="card-text">{leftUser?.firstName} {leftUser?.lastName}</div>
                                 </div>
                             </div>
                             <div className="ds-details">
                                 <img src={user3} alt="Profile image of DL05MONU92" className="profile-img" />
                                 <div>
-                                    <div className="fw-bold">DL05MONU92</div>
-                                    <div className="card-text">Parent ID</div>
+                                    <div className="fw-bold">{rightUser?.logId || "N/A"}</div>
+                                    <div className="card-text">{rightUser?.firstName} {rightUser?.lastName}</div>
                                 </div>
                             </div>
                         </div>

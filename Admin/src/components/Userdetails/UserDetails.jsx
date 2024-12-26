@@ -1,11 +1,27 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
+import axios from "axios"
+import { useEffect } from 'react';
 
 const UserDetails = () => {
+  const { id } = useParams()
+  const [user, setUser] = useState({})
 
-  const location = useLocation();
-  const { user } = location.state || {};
+  const getUserData = async () => {
+    try {
+      const res = await axios.get("http://localhost:8000/api/get-user-details-by-logId/" + id)
+      console.log(res)
+      if (res.status === 200) {
+        setUser(res.data.data)
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
+  useEffect(() => {
+    getUserData()
+  }, [])
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -52,17 +68,17 @@ const UserDetails = () => {
 
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="modal-title">Logid - {user?.logid || 'Loading...'}</h3>
+              <h3 className="modal-title">LogId - {user?.logId || 'Loading...'}</h3>
             </div>
             <div className="modal-body mt-4">
               <div className="row mb-3">
                 <div className="col-6">
                   <p className="mb-1"><strong>Login ID</strong></p>
-                  <p className="bg-light p-2">{user?.logid || 'Loading...'}</p>
+                  <p className="bg-light p-2">{user?.logId || 'Loading...'}</p>
                 </div>
                 <div className="col-6">
                   <p className="mb-1"><strong>Name</strong></p>
-                  <p className="bg-light p-2">{user?.name || 'Loading...'}</p>
+                  <p className="bg-light p-2">{user?.firstName} {user?.lastName}</p>
                 </div>
                 <div className="col-6">
                   <p className="mb-1"><strong>Pay Status</strong></p>

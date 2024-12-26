@@ -1,6 +1,6 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 const TotalUser = () => {
     const [data, setData] = useState([]); // State to hold user data from API
@@ -13,7 +13,7 @@ const TotalUser = () => {
     // Fetch data from API
     const getapiData = async () => {
         try {
-            const res = await axios.get("https://api.saibalikavikas.com/api/get-signups");
+            const res = await axios.get("http://localhost:8000/api/get-signups");
             if (res.data.success) {
                 setData(res.data.data); // Set API data to state
             }
@@ -93,9 +93,9 @@ const TotalUser = () => {
                                     <td>{user.role}</td>
                                     <td>{new Date(user.createdAt).toLocaleDateString()}</td>
                                     <td>
-                                        <button className="details" onClick={() => handleView(user)}>
+                                        <Link style={{textDecoration:"none"}} className="details" to={`/UserDetails/${user.logId}`}>
                                             View
-                                        </button>
+                                        </Link>
                                     </td>
                                 </tr>
                             ))

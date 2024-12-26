@@ -115,7 +115,26 @@ const getSignupById = async (req, res) => {
             data: signup
         });
     } catch (err) {
-        res.status(500).json({ success: false, message:"Internal Server Error" });
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+
+// Get a single signup by ID
+const getSignupByLogId = async (req, res) => {
+    try {
+        console.log(req.params.logid)
+        const signup = await SignUp.findOne({ logId: req.params.logid });
+        if (!signup) {
+            return res.status(404).json({ success: false, errors: ["Signup not found"] });
+        }
+        res.status(200).json({
+            success: true,
+            message: "Record Found Successfully",
+            data: signup
+        });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Internal Server Error" });
     }
 };
 
@@ -221,5 +240,6 @@ module.exports = {
     getSignupById,
     updateSignupById,
     deleteSignupById,
-    loginUser
+    loginUser,
+    getSignupByLogId
 };

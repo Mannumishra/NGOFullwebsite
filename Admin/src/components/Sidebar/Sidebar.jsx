@@ -29,13 +29,16 @@ function Sidebar({ isOpen, toggleSidebar }) {
     }
   };
 
+  const handellogOut = () => {
+
+  }
   return (
     <div className={`sidebar ${isOpen ? '' : 'hidden'}`}>
-    <Link to="/" style={{textDecoration:"none", color:"#ffffff"}}>
-      <div className="logo">
-        <img src={weblogo} alt="Logo" height={"50px"} width={"50px"} />
-        <span className="ms-2" style={{ fontSize: "10px" }}>Sai Balika Vikas Kalyan Society</span>
-      </div>
+      <Link to="/" style={{ textDecoration: "none", color: "#ffffff" }}>
+        <div className="logo">
+          <img src={weblogo} alt="Logo" height={"50px"} width={"50px"} />
+          <span className="ms-2" style={{ fontSize: "10px" }}>Sai Balika Vikas Kalyan Society</span>
+        </div>
       </Link>
       <nav className="nav flex-column">
         <NavLink className="nav-link" to="/" end onClick={handleNavLinkClick}>
@@ -61,7 +64,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
 
         <div className="nav-item">
           <div className="nav-link d-flex align-items-center" onClick={() => toggleDropdown('earnings')}>
-            <BiMoneyWithdraw  className="me-3" size={20} />
+            <BiMoneyWithdraw className="me-3" size={20} />
             Earnings
             {renderDropdownIcon('earnings')}
           </div>
@@ -113,7 +116,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
           )}
         </div> */}
 
-        <NavLink className="nav-link" to="/logout" onClick={handleNavLinkClick}>
+        <NavLink className="nav-link" onClick={handellogOut}>
           <IoMdLock className="me-3" size={20} />
           Logout
         </NavLink>

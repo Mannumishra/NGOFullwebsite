@@ -1,5 +1,5 @@
 const express = require("express");
-const { createSignup, getAllSignups, getSignupById, updateSignupById, deleteSignupById, loginUser } = require("../Controllers/SignupController");
+const { createSignup, getAllSignups, getSignupById, updateSignupById, deleteSignupById, loginUser, getSignupByLogId } = require("../Controllers/SignupController");
 const verifyToken = require("../Middleware/verifyToken");
 const SignupRouter = express.Router();
 
@@ -7,6 +7,7 @@ const SignupRouter = express.Router();
 SignupRouter.post("/signup", createSignup);
 SignupRouter.get("/get-signups", getAllSignups);
 SignupRouter.get("/get-user-details/:id", getSignupById);
+SignupRouter.get("/get-user-details-by-logId/:logid", getSignupByLogId);
 SignupRouter.put("/update-profile/:id", updateSignupById);
 SignupRouter.delete("/delete-signup/:id", deleteSignupById);
 

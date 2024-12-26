@@ -387,7 +387,7 @@ const Signup = () => {
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style={{background:"rgb(34, 182, 175)", border:"none"}}>Submit</button>
+                <button type="submit" class="btn btn-primary" style={{ background: "rgb(34, 182, 175)", border: "none" }}>Submit</button>
             </form>
         </div>
     );

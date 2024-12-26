@@ -44,7 +44,7 @@ const generateLogId = async () => {
 };
 
 // Helper function to send email to a user
-const sendWelcomeEmail = (user, userType) => {
+const sendWelcomeEmail = (user, userType, parentUser) => {
   const mailOptions = {
     from: process.env.MAIL_USERNAME,
     to: user.email,
@@ -61,7 +61,19 @@ const sendWelcomeEmail = (user, userType) => {
                   <p style="font-size: 16px; line-height: 1.5; font-weight: bold;">Your Login Details:</p>
                   <p style="font-size: 16px; line-height: 1.5;">Log IN ID: <span style="font-weight: bold; color: #ff6600;">${user.logId}</span></p>
                   <p style="font-size: 16px; line-height: 1.5;">Password: <span style="font-weight: bold; color: #ff6600;">${userType.password}</span> (Please change it after logging in for security reasons)</p>
+                  
+                  ${parentUser ? `
+                  <p style="font-size: 16px; line-height: 1.5; font-weight: bold;">Parent Details:</p>
+                  <p style="font-size: 16px; line-height: 1.5;">Parent User ID: <span style="font-weight: bold; color: #ff6600;">${parentUser.logId}</span></p>
+                  <p style="font-size: 16px; line-height: 1.5;">Parent Name: <span style="font-weight: bold; color: #ff6600;">${parentUser.firstName} ${parentUser.lastName}</span></p>
+                  ` : `
+                  <p style="font-size: 16px; line-height: 1.5;">You do not have a parent assigned.</p>
+                  `}
+                  
                   <p style="font-size: 16px; line-height: 1.5;">Thank you for joining us! We are excited to have you as part of our community.</p>
+                  <div style="text-align: center; margin-top: 20px;">
+                      <a href="${process.env.LOGIN_URL}" style="display: inline-block; padding: 10px 20px; background-color: #ff6600; color: #ffffff; text-decoration: none; font-size: 16px; border-radius: 5px;">Login</a>
+                  </div>
               </div>
               <div style="text-align: center; margin-top: 20px; font-size: 14px; color: #888888;">
                   <p>&copy; ${new Date().getFullYear()} Sai Balika Vikas Kalyan Society. All rights reserved.</p>
@@ -103,7 +115,7 @@ exports.createUserRelation = async (req, res) => {
       }
 
       await new UserRelation({ user: newLeftUser._id }).save();
-      sendWelcomeEmail(newLeftUser, leftUser);
+      sendWelcomeEmail(newLeftUser, leftUser, mainUser);
       leftUserId = newLeftUser._id;
     }
 
@@ -115,7 +127,7 @@ exports.createUserRelation = async (req, res) => {
       }
 
       await new UserRelation({ user: newRightUser._id }).save();
-      sendWelcomeEmail(newRightUser, rightUser);
+      sendWelcomeEmail(newRightUser, rightUser, mainUser);
       rightUserId = newRightUser._id;
     }
 
