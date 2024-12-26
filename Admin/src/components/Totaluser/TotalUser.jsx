@@ -13,7 +13,7 @@ const TotalUser = () => {
     // Fetch data from API
     const getapiData = async () => {
         try {
-            const res = await axios.get("http://localhost:8000/api/get-signups");
+            const res = await axios.get("https://api.saibalikavikas.com/api/get-signups");
             if (res.data.success) {
                 setData(res.data.data); // Set API data to state
             }

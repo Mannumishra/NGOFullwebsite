@@ -20,12 +20,12 @@ const PersonalDetails = () => {
 
     const getUserRecord = async () => {
         try {
-            const res = await axios.get(`http://localhost:8000/api/get-user-details/${userId}`);
+            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${userId}`);
             if (res.status === 200) {
                 setUserdata(res.data.data);
 
                 // Fetch left and right users under the main user
-                const userRelation = await axios.get(`http://localhost:8000/api/user-relation/${userId}`);
+                const userRelation = await axios.get(`https://api.saibalikavikas.com/api/user-relation/${userId}`);
                 if (userRelation.status === 200 && userRelation.data) {
                     setLeftUser(userRelation.data.userRelation.leftUser);
                     setRightUser(userRelation.data.userRelation.rightUser);

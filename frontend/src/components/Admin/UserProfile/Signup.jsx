@@ -39,7 +39,7 @@ const Signup = () => {
     // Fetch user data
     const getUserRecord = async () => {
         try {
-            const res = await axios.get(`http://localhost:8000/api/get-user-details/${userId}`);
+            const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${userId}`);
             if (res.status === 200) {
                 setUser(res.data.data);
             }
@@ -76,7 +76,7 @@ const Signup = () => {
         };
 
         try {
-            const response = await axios.post('http://localhost:8000/api/create', payload);
+            const response = await axios.post('https://api.saibalikavikas.com/api/create', payload);
             if (response.status === 200) {
                 Swal.fire({
                     icon: 'success',
