@@ -31,7 +31,7 @@ const Login = () => {
                 });
             }
         } catch (error) {
-            console.error("Login error:", error);
+            
             Swal.fire({
                 title: "Error!",
                 text: "Something went wrong. Please try again later.",

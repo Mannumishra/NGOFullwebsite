@@ -10,10 +10,93 @@ const DirectDonation = () => {
     const [leftUser, setLeftUser] = useState(null); // State for left user
     const [rightUser, setRightUser] = useState(null); // State for right user
 
+    // const userIDChange = (id) => {
+    //     const arr=localStorage.getItem('userID') || [];
+    //     arr.push({id, current:true});
+    //     arr.forEach(item => item.current = item.id === id);
+    //     localStorage.setItem('userID',arr);
+
+
+    //     setUserId(id); // Update UserId state locally
+    //     // Remove sessionStorage update here
+    // };
+
+    useEffect(()=>{
+        localStorage.removeItem('userID');
+        userIDChange(UserId)  
+    },[])
     const userIDChange = (id) => {
-        setUserId(id); // Update UserId state locally
-        // Remove sessionStorage update here
+        // Retrieve the existing data and parse it into an array
+        const storedData = JSON.parse(localStorage.getItem('userID')) || [];
+    
+        // Update the array: mark all items as not current and filter out the new id if it already exists
+        const updatedData = storedData
+            .map(item => ({ ...item, current: false }))
+            .filter(item => item.id !== id);
+    
+        // Push the new id with `current: true`
+        updatedData.push({ id, current: true });
+    
+        // Save the updated array back to localStorage
+        localStorage.setItem('userID', JSON.stringify(updatedData));
+    
+        // Update the local state
+        setUserId(id);
     };
+    
+    const getBack = () => {
+        try {
+           
+    
+            // Retrieve the existing data from localStorage
+            const storedDataString = localStorage.getItem('userID');
+            
+            // If no data is found, handle it gracefully
+            if (!storedDataString) {
+                
+                alert("No previous ID to revert to.");
+                return;
+            }
+    
+            // Parse the data into an array
+            const storedData = JSON.parse(storedDataString);
+    
+            // Ensure there are at least two entries
+            if (storedData.length < 1) {
+                console.warn("No previous ID to revert to.");
+                alert("No previous ID to revert to.");
+                return;
+            }
+    
+            // Find the index of the current ID
+            const currentIndex = storedData.findIndex(item => item.current);
+    
+            if (currentIndex === -1 || currentIndex === 0) {
+                console.warn("No valid previous ID to revert to.");
+                alert("No valid previous ID to revert to.");
+                return;
+            }
+    
+            // Set the current ID to false
+            storedData[currentIndex].current = false;
+    
+            // Set the previous ID as current
+            storedData[currentIndex - 1].current = true;
+    
+            // Save the updated array back to localStorage
+            localStorage.setItem('userID', JSON.stringify(storedData));
+    
+            // Update the local state
+            setUserId(storedData[currentIndex - 1].id);
+        } catch (error) {
+            console.error("An error occurred in getBack:", error);
+            alert("An error occurred. Please try again.");
+        }
+    };
+    
+    
+
+
 
     // Fetch main user details
     const getUserRecord = async () => {
@@ -59,7 +142,7 @@ const DirectDonation = () => {
                         <div className="col-7">
                             <div className="card-body">
                                 <h5 className="card-title">{mainUser.logId}</h5>
-                                <Link to="#" className="btn btn-arrow"><FaLongArrowAltUp /></Link>
+                                <Link to="#" onClick={()=>getBack(UserId)} className="btn btn-arrow"><FaLongArrowAltUp /></Link>
                             </div>
                         </div>
                     </div>

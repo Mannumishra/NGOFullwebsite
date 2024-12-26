@@ -1,5 +1,5 @@
 const express = require("express");
-const { createDonation, updateDonationStatus, getAllDonatation } = require("../Controllers/DonationController");
+const { createDonation, updateDonationStatus,getDonatationList, getAllDonatation } = require("../Controllers/DonationController");
 const DonatationRouter = express.Router();
 
 
@@ -10,5 +10,5 @@ DonatationRouter.post("/make-donatation", createDonation);
 // Route for updating donation status after payment verification
 DonatationRouter.post("/verify-payment", updateDonationStatus);
 DonatationRouter.get("/all-donatation", getAllDonatation);
-
+DonatationRouter.get("/get-donation-details/:id", getDonatationList);
 module.exports = DonatationRouter;

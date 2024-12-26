@@ -1,12 +1,62 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import '../Sidebar/Sidebar.css'
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const UserView = () => {
 
   const location = useLocation();
   const { user } = location.state || {};
 
+const [UserId, setUserId] = useState(sessionStorage.getItem("UserId") || "");  
+
+
+  const [userData, setUserData] = useState({
+    title: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    fathersName: '',
+    motherName: '',
+    gender: '',
+    mobile: '',
+    email: '',
+    dateOfBirth: '',
+    state: '',
+    city: '',
+    address: '',
+    country: 'India',
+    district: '',
+    pincode: '',
+    landmark: '',
+    nomineeName: '',
+    nomineeRelation: '',
+    nomineeAddress: '',
+    nomineeNumber: '',
+    panNumber: '',
+    ifscCode: '',
+    accountNumber: '',
+    gstNumber: '',
+});
+
+
+const getUserdata = async () => {
+    try {
+        const res = await axios.get(`https://api.saibalikavikas.com/api/get-user-details/${UserId}`);
+       
+        if (res.status === 200) {
+            setUserData(res.data.data);
+        }
+    } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Failed to fetch user data.', 'error');
+    }
+};
+
+useEffect(() => {
+    getUserdata();
+}, []);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,6 +96,46 @@ const UserView = () => {
   const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
 
+
+
+
+
+
+
+
+  const [userList, setUserList] = useState(null);
+  
+
+  const getdata = async () => {
+    try {
+      const res = await axios.get(
+        `https://api.saibalikavikas.com/api/get-child-details/${UserId}`
+      );
+
+      if (res.status === 200) {
+        console.log(res.data);
+        setUserList(res.data);
+      }
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error", "Failed to fetch donation data.", "error");
+    }
+  };
+
+  useEffect(() => {
+    getdata();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
   return (
     <>
       <div className="container">
@@ -53,26 +143,23 @@ const UserView = () => {
 
           <div className="modal-content">
             <div className="modal-header">
-              <h3 className="modal-title">Logid - {user?.id || 'Loading...'}</h3>
+              <h3 className="modal-title">Logid - {userData?.logId || 'Loading...'}</h3>
             </div>
             <div className="modal-body mt-4">
               <div className="row mb-3">
                 <div className="col-6">
                   <p className="mb-1"><strong>Login ID</strong></p>
-                  <p className="bg-light p-2">{user?.id || 'Loading...'}</p>
+                  <p className="bg-light p-2">{userData?.logId || 'Loading...'}</p>
                 </div>
                 <div className="col-6">
                   <p className="mb-1"><strong>Name</strong></p>
-                  <p className="bg-light p-2">{user?.name || 'Loading...'}</p>
+                  <p className="bg-light p-2">{userData?.firstName + " "+ userData?.lastName  || 'Loading...'}</p>
                 </div>
-                <div className="col-6">
+                {/* <div className="col-6">
                   <p className="mb-1"><strong>Pay Status</strong></p>
                   <p className="bg-light p-2">13/07/2018</p>
-                </div>
-                <div className="col-6">
-                  <p className="mb-1"><strong>Reference ID</strong></p>
-                  <p className="bg-light p-2">DL05DK1986</p>
-                </div>
+                </div> */}
+              
                 <div className="col-6">
                   <p className="mb-1"><strong>DS Status</strong></p>
                   <p className="bg-light p-2">Paid</p>
@@ -83,7 +170,7 @@ const UserView = () => {
                 </div>
                 <div className="col-6">
                   <p className="mb-1"><strong>Parent ID</strong></p>
-                  <p className="bg-light p-2">DL05DK1986</p>
+                  <p className="bg-light p-2">  {userData?.logId || 'Loading...'}  </p>
                 </div>
               </div>
             </div>
@@ -94,11 +181,11 @@ const UserView = () => {
               <div className="col-9">
                 <h3 className="mb-2">Sales with your direct reference</h3>
               </div>
-              <div className="col-3">
+              {/* <div className="col-3">
                 <input type="text" placeholder="Search by Name" className="form-control" value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)} />
 
-              </div>
+              </div> */}
             </div>
 
           </div>
@@ -108,22 +195,24 @@ const UserView = () => {
                 <tr>
                   <th scope="col">Sr No</th>
                   <th scope="col">Name</th>
-                  <th scope="col">Parent ID</th>
+                  
                   <th scope="col">Log Id</th>
-                  <th scope="col">Amount</th>
-                  <th scope="col">Month</th>
+                  {/* <th scope="col">Parent Id</th> */}
+                   
+                  <th scope="col">Joining Date</th>
                 </tr>
               </thead>
               <tbody>
-                {currentUsers.length > 0 ? (
-                  currentUsers.map((user, index) => (
+                {userList?.myChilds.length > 0 ? (
+                  userList?.myChilds.map((user, index) => (
                     <tr key={index}>
-                      <th scope="row">{user.srNo}</th>
-                      <td>{user.name}</td>
-                      <td>{user.parentId}</td>
-                      <td>{user.logid}</td>
-                      <td>{user.amount}</td>
-                      <td>{user.month}</td>
+                      <th scope="row">{index+1}</th>
+                      <td>{user?.user?.firstName}</td>
+                      
+                      <td>{user?.user?.logId}</td>
+                      {/* <td>{user?.parentLogId}</td> */}
+                       
+                      <td>{new Date(user.createdAt).toLocaleString()}</td>
                     </tr>
                   ))
                 ) : (
@@ -135,7 +224,7 @@ const UserView = () => {
             </table>
           </div>
           {/* Pagination Controls */}
-          <div className="d-flex justify-content-center align-items-center">
+          {/* <div className="d-flex justify-content-center align-items-center">
             <button
               className="btn btn-next me-2"
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -149,7 +238,7 @@ const UserView = () => {
               disabled={currentPage === totalPages}>
               Next
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

@@ -234,8 +234,100 @@ const loginUser = async (req, res) => {
 };
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// const getchild = async (req, res) => {
+//     try {
+//          let myChilds = [];
+ 
+//         // Recursive function to traverse the tree and collect donations
+//         const collectChilds = async (userId) => {
+            
+//             // Fetch user relations for the current user
+//             const myChild = await UserRelation.findOne({user: userId })
+            
+//             if (!myChild) return; // Stop if no child exists
+
+//             // Process left child
+//             if (myChild.leftUser) {
+//                 const leftChild = await UserRelation.findOne({ user: myChild.leftUser }).populate("user")
+//                 myChilds = [...myChilds, ...leftChild];
+//                 await collectChilds(myChild.leftUser); // Recursive call for left child
+//             }
+          
+//             // Process right child
+//             if (myChild.rightUser) {
+//                 const rightChild = await UserRelation.findOne({ user: myChild.rightUser }).populate("user")
+//                 myChilds = [...myChilds, ...rightChild];
+//                 await collectChilds(myChild.rightUser); // Recursive call for right child
+//             }
+//         };
+ 
+//         // Start the recursion from the given user
+//         await collectChilds(req.params.id);
+ 
+//         res.status(200).json({
+//             success: true,
+//             message: "Record Found Successfully",
+             
+//             myChilds,
+//         });
+//     } catch (err) {
+//         console.error(err); // Log error for debugging
+//         res.status(500).json({ success: false, message: "Internal Server Error" });
+//     }
+// };
+const getChild = async (req, res) => {
+    try {
+        let myChilds = [];
+
+        // Recursive function to traverse the tree and collect children
+        const collectChilds = async (userId) => {
+            // Fetch user relations for the current user
+            const myChild = await UserRelation.findOne({ user: userId });
+
+            if (!myChild) return; // Stop if no child exists
+
+            // Add the current user details to the result
+            const currentUser = await UserRelation.findOne({ user: userId }).populate("user");
+            if (currentUser) myChilds.push(currentUser);
+            
+           
+            // Process right child
+            if (myChild.rightUser) {
+                await collectChilds(myChild.rightUser); // Recursive call for right child
+            }
+        };
+
+        // Start the recursion from the given user
+        await collectChilds(req.params.id);
+ 
+        res.status(200).json({
+            success: true,
+            message: "Record Found Successfully",
+            myChilds,
+        });
+    } catch (err) {
+        console.error(err); // Log error for debugging
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+
+
 module.exports = {
     createSignup,
+    getchild:getChild,
     getAllSignups,
     getSignupById,
     updateSignupById,

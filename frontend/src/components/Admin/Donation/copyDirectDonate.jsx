@@ -46,7 +46,7 @@ const DirectDonation = () => {
                                 <h5 className="card-title">{mainUser.logId}</h5>
                                 <Link to="#" className="btn btn-arrow"><FaLongArrowAltUp /></Link>
                                 <br />
-                                {/* <Link to={users[selectedUserIndex].link} className="btn btn-custom">View Detail</Link> */}
+                          
                             </div>
                         </div>
                     </div>
@@ -61,8 +61,7 @@ const DirectDonation = () => {
                         <button className="btn btn-outline-secondary" type="button">Right</button>
                     </div>
                     <div className="btn-group" role="group">
-                        {/* <button className="btn btn-info" type="button">0</button> */}
-                        {/* <button className="btn btn-info" type="button">554</button> */}
+                      
                     </div>
                     <div className="row">
                         <div className="col-6 text-center">
@@ -72,7 +71,6 @@ const DirectDonation = () => {
                             <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Left`}>
                                 <button className="btn btn-outline-danger" type="button">Left Empty</button>
                             </Link>
-
 
                         </div>
                         <div className="col-6 text-center">
@@ -84,9 +82,7 @@ const DirectDonation = () => {
                             <Link to={`/admin-signup?parentId=${mainUser.logId}&position=Right`}>
                                 <button className="btn btn-outline-danger" type="button">Right Empty</button>
                             </Link>
-                            {/* <button className="btn btn-arrowUp" type="button">
-                                <FaLongArrowAltDown size={15} />
-                            </button> */}
+                            
                         </div>
                     </div>
                 </div>

@@ -119,7 +119,7 @@ const Signup = () => {
             <h6 className="mb-5">Signup new login</h6>
             <form onSubmit={handleSubmit}>
                 <div className="row mb-3">
-                    <div className="col-md-6 mb-3">
+                    {/* <div className="col-md-6 mb-3">
                         <label htmlFor="name">Parent ID</label>
                         <input
                             id="user"
@@ -131,7 +131,7 @@ const Signup = () => {
                             className='form-control'
                             disabled
                         />
-                    </div>
+                    </div> */}
                     <div className="col-md-6 mb-3">
                         <label htmlFor="position">Position</label>
                         <input

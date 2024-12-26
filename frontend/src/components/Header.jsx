@@ -99,12 +99,17 @@ const Header = () => {
                                 <ul className="dropdown-menu">
                                     <li>
                                         <Link to="/admin-dashboard" onClick={handleLinkClick}>
-                                            Admin  Dashboard
+                                            My Dashboard
                                         </Link>
                                     </li>
                                     <li>
                                         <Link to="/admin-Directdonation" onClick={handleLinkClick}>
-                                            New Direct Donation Sign-Up
+                                            New Direct Sign-Up
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link to="/admin-UserView" onClick={handleLinkClick}>
+                                            Team View
                                         </Link>
                                     </li>
                                     <li className="dropdown-submenu">

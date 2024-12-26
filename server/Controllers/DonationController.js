@@ -1,6 +1,6 @@
 const Razorpay = require("razorpay");
 const Donation = require("../Models/DonateModel");
-
+const UserRelation = require("../Models/UserRelationSchema");
 
 // Razorpay instance setup
 const razorpayInstance = new Razorpay({
@@ -101,7 +101,68 @@ const getAllDonatation = async (req, res) => {
         console.log(error)
     }
 }
+
+
+ 
+
+ 
+
+const getDonationList = async (req, res) => {
+    try {
+        const myDonation = await Donation.find({ userId: req.params.id }).populate("userId")
+        let myChildsDonation = [];
+ 
+        // Recursive function to traverse the tree and collect donations
+        const collectDonations = async (userId) => {
+            
+            // Fetch user relations for the current user
+            const myChild = await UserRelation.findOne({user: userId })
+            
+            if (!myChild) return; // Stop if no child exists
+
+            // Process left child
+            if (myChild.leftUser) {
+                const leftDonations = await Donation.find({ userId: myChild.leftUser }).populate("userId")
+                myChildsDonation = [...myChildsDonation, ...leftDonations];
+                await collectDonations(myChild.leftUser); // Recursive call for left child
+            }
+          
+            // Process right child
+            if (myChild.rightUser) {
+                const rightDonations = await Donation.find({ userId: myChild.rightUser }).populate("userId")
+                myChildsDonation = [...myChildsDonation, ...rightDonations];
+                await collectDonations(myChild.rightUser); // Recursive call for right child
+            }
+        };
+ 
+        // Start the recursion from the given user
+        await collectDonations(req.params.id);
+ 
+        res.status(200).json({
+            success: true,
+            message: "Record Found Successfully",
+            myDonation,
+            myChildsDonation,
+        });
+    } catch (err) {
+        console.error(err); // Log error for debugging
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 module.exports = {
     createDonation,
-    updateDonationStatus,getAllDonatation
+    updateDonationStatus,getDonatationList:getDonationList,getAllDonatation
 };
