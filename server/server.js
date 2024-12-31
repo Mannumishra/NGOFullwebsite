@@ -7,7 +7,6 @@ const cors = require("cors")
 const SignupRouter = require("./Routes/SignupRoutes")
 const verifyToken = require("./Middleware/verifyToken")
 const DonatationRouter = require("./Routes/donationRoutes")
-const AdminSignupRouter = require("./Routes/AdminSignupRoutes")
 const router = require("./Routes/userRelationRoutes")
 
 
@@ -22,7 +21,6 @@ app.get("/", (req, res) => {
 
 app.use("/api", SignupRouter)
 app.use("/api", DonatationRouter)
-app.use("/api", AdminSignupRouter)
 app.use("/api", router)
 
 
